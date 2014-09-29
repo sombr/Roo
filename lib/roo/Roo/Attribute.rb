@@ -24,7 +24,7 @@ module Roo
         coercer = attr_params[:coerce] || lambda { |x| x }
         raise "Coerce should be a function" unless coercer.is_a? Proc
 
-        trigger = attr_params[:trigger] || lambda { }
+        trigger = attr_params[:trigger] || lambda { |x| }
         raise "Trigger should be a function" unless trigger.is_a? Proc
 
         accessors = { :reader => false, :writer => false, :private => false }
@@ -38,7 +38,7 @@ module Roo
             accessors[:private] = true if attr_params[:is] == :rwp
         end
 
-        reader = lambda { self.instance_variable_get( var_name ) }
+        reader = nil
         writer = lambda do |val|
           val = coercer.call( val )
           if isa_check.call( val )
@@ -72,6 +72,7 @@ module Roo
             val
           }
         else # eager
+          reader = lambda { self.instance_variable_get( var_name ) }
           pval = ( attr_params[:default].is_a? Proc ) ? attr_params[:default] : lambda { attr_params[:default] }
           default = pval.call()
         end

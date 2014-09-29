@@ -2,7 +2,7 @@ module Roo
   require_relative "Roo/Attribute"
 
   def self.included( cl )
-    cl.include Roo::Attribute
+    cl.send( :include, Roo::Attribute )
     cl.send( :define_method, :initialize, lambda { |**args|
         _roo_meta_ = self.class.class_variable_get("@@_roo_meta_") || {}
         _roo_meta_[:attributes] ||= {}
